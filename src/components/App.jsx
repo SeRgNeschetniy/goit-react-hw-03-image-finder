@@ -5,25 +5,30 @@ import * as API from '../API/Api';
 import Button from './Button/Button';
 import Modal from './Modal/Modal';
 import { Container } from './App.module';
+import Loader from './Loader/Loader';
+
 export default class App extends Component {
   state = {
     page: 1,
     query: '',
     items: [],
     largeImageURL: '',
+    isLoading: false,
   };
 
-  addImages = async (query, page) => {
+  loadImages = async (query, page) => {
+    this.setState({ isLoading: true });
     const images = await API.fetchImages(query, page);
     this.setState(prevState => ({
       items: [...prevState.items, ...images],
     }));
+    this.setState({ isLoading: false });
   };
 
   componentDidUpdate(prevProps, prevState) {
     const { query, page } = this.state;
     if (prevState.query !== query || prevState.page !== page) {
-      this.addImages(query, page);
+      this.loadImages(query, page);
     }
   }
 
@@ -50,10 +55,11 @@ export default class App extends Component {
   };
 
   render() {
-    const { items, largeImageURL } = this.state;
+    const { items, isLoading, largeImageURL } = this.state;
     return (
       <Container>
         <Searchbar onSearch={this.handleSearchSubmit} />
+        {isLoading && <Loader />}
         {items.length > 0 && (
           <ImageGallery items={items} onClick={this.onOpenModal} />
         )}

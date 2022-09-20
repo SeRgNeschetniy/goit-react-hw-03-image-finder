@@ -14,15 +14,22 @@ export default class App extends Component {
     items: [],
     largeImageURL: '',
     isLoading: false,
+    error: null,
   };
 
   loadImages = async (query, page) => {
     this.setState({ isLoading: true });
-    const images = await API.fetchImages(query, page);
-    this.setState(prevState => ({
-      items: [...prevState.items, ...images],
-    }));
-    this.setState({ isLoading: false });
+
+    try {
+      const images = await API.fetchImages(query, page);
+      this.setState(prevState => ({
+        items: [...prevState.items, ...images],
+      }));
+    } catch (error) {
+      this.setState({ error });
+    } finally {
+      this.setState({ isLoading: false });
+    }
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -55,10 +62,11 @@ export default class App extends Component {
   };
 
   render() {
-    const { items, isLoading, largeImageURL } = this.state;
+    const { items, isLoading, largeImageURL, error } = this.state;
     return (
       <Container>
         <Searchbar onSearch={this.handleSearchSubmit} />
+        {error && <p>Whoops, something went wrong: {error.message}</p>}
         {isLoading && <Loader />}
         {items.length > 0 && (
           <ImageGallery items={items} onClick={this.onOpenModal} />

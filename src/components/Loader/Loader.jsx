@@ -1,5 +1,4 @@
 import { MagnifyingGlass } from 'react-loader-spinner';
-//import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import { LoaderWrapp } from './Loader.module';
 
 export default function Loader() {
@@ -7,8 +6,8 @@ export default function Loader() {
     <LoaderWrapp>
       <MagnifyingGlass
         visible={true}
-        height="80"
-        width="80"
+        height="100"
+        width="100"
         ariaLabel="MagnifyingGlass-loading"
         wrapperStyle={{}}
         wrapperClass="MagnifyingGlass-wrapper"

@@ -29,6 +29,11 @@ export default class App extends Component {
       this.setState({ error });
     } finally {
       this.setState({ isLoading: false });
+
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth',
+      });
     }
   };
 
@@ -67,10 +72,11 @@ export default class App extends Component {
       <Container>
         <Searchbar onSearch={this.handleSearchSubmit} />
         {error && <p>Whoops, something went wrong: {error.message}</p>}
-        {isLoading && <Loader />}
+
         {items.length > 0 && (
           <ImageGallery items={items} onClick={this.onOpenModal} />
         )}
+        {isLoading && <Loader />}
         {items.length > 0 && <Button onLoadMore={this.onLoadMore} />}
         {largeImageURL && (
           <Modal onClose={this.onCloseModal} largeImageURL={largeImageURL} />

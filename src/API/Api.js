@@ -7,5 +7,5 @@ export async function fetchImages(searchQuery, page) {
   const URL = `${BASE_URL}?key=${API_KEY}&q=${searchQuery}${PARAMS}`;
 
   const response = await axios.get(URL);
-  return response.data.hits;
+  return response.data;
 }

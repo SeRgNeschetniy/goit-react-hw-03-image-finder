@@ -15,15 +15,17 @@ export default class App extends Component {
     largeImageURL: '',
     isLoading: false,
     error: null,
+    totalPages: 0,
   };
 
   loadImages = async (query, page) => {
     this.setState({ isLoading: true });
 
     try {
-      const images = await API.fetchImages(query, page);
+      const data = await API.fetchImages(query, page);
       this.setState(prevState => ({
-        items: [...prevState.items, ...images],
+        items: [...prevState.items, ...data.hits],
+        totalPages: data.totalHits,
       }));
     } catch (error) {
       this.setState({ error });
@@ -49,6 +51,7 @@ export default class App extends Component {
       query,
       items: [],
       page: 1,
+      totalPages: 0,
     });
   };
 
@@ -67,7 +70,8 @@ export default class App extends Component {
   };
 
   render() {
-    const { items, isLoading, largeImageURL, error } = this.state;
+    const { items, isLoading, largeImageURL, error, page, totalPages } =
+      this.state;
     return (
       <Container>
         <Searchbar onSearch={this.handleSearchSubmit} />
@@ -77,7 +81,10 @@ export default class App extends Component {
           <ImageGallery items={items} onClick={this.onOpenModal} />
         )}
         {isLoading && <Loader />}
-        {items.length > 0 && <Button onLoadMore={this.onLoadMore} />}
+
+        {page < Math.ceil(totalPages / 12) && (
+          <Button onLoadMore={this.onLoadMore} />
+        )}
         {largeImageURL && (
           <Modal onClose={this.onCloseModal} largeImageURL={largeImageURL} />
         )}
